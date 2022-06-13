@@ -90,28 +90,28 @@ func (mi *ModuleInstance) Exports() modules.Exports {
 	return modules.Exports{Default: mi.obj}
 }
 
+var errRunInInitContext = errors.New("getting scenario information in the init context is not supported")
+
 // newScenarioInfo returns a goja.Object with property accessors to retrieve
 // information about the scenario the current VU is running in.
 func (mi *ModuleInstance) newScenarioInfo() (*goja.Object, error) {
 	rt := mi.vu.Runtime()
 	vuState := mi.vu.State()
 	if vuState == nil {
-		return nil, errors.New("getting scenario information in the init context is not supported")
+		return nil, errRunInInitContext
 	}
-	getScenarioState := func() *lib.ScenarioState {
-		ss := lib.GetScenarioState(mi.vu.Context())
-		if ss == nil {
-			common.Throw(rt, errors.New("getting scenario information in the init context is not supported"))
-		}
-		return ss
+
+	scenarioState := lib.GetScenarioState(mi.vu.Context())
+	if scenarioState == nil {
+		return nil, errRunInInitContext
 	}
 
 	si := map[string]func() interface{}{
 		"name": func() interface{} {
-			return getScenarioState().Name
+			return scenarioState.Name
 		},
 		"executor": func() interface{} {
-			return getScenarioState().Executor
+			return scenarioState.Executor
 		},
 		"startTime": func() interface{} {
 			//nolint:lll
@@ -119,10 +119,10 @@ func (mi *ModuleInstance) newScenarioInfo() (*goja.Object, error) {
 			// timestamps usually are:
 			// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date#time_value_or_timestamp_number
 			// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now#return_value
-			return getScenarioState().StartTime.UnixNano() / int64(time.Millisecond)
+			return scenarioState.StartTime.UnixNano() / int64(time.Millisecond)
 		},
 		"progress": func() interface{} {
-			p, _ := getScenarioState().ProgressFn()
+			p, _ := scenarioState.ProgressFn()
 			return p
 		},
 		"iterationInInstance": func() interface{} {
