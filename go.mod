@@ -2,6 +2,7 @@ module go.k6.io/k6
 
 go 1.17
 
+
 require (
 	github.com/Azure/go-ntlmssp v0.0.0-20211209120228-48547f28849e
 	github.com/DataDog/datadog-go v0.0.0-20180330214955-e67964b4021a
@@ -9,6 +10,7 @@ require (
 	github.com/Soontao/goHttpDigestClient v0.0.0-20170320082612-6d28bb1415c5
 	github.com/andybalholm/brotli v1.0.4
 	github.com/dop251/goja v0.0.0-20220516123900-4418d4575a41
+	github.com/ethereum/go-ethereum v1.10.18
 	github.com/fatih/color v1.13.0
 	github.com/golang/protobuf v1.5.2
 	github.com/gorilla/websocket v1.5.0
@@ -41,6 +43,11 @@ require (
 )
 
 require (
+	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect
+	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
+)
+
+require (
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dlclark/regexp2 v1.4.1-0.20201116162257-a2a8dda75c91 // indirect
@@ -48,8 +55,6 @@ require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mstoykov/envconfig v1.4.1-0.20220114105314-765c6d8c76f1
-	github.com/onsi/ginkgo v1.14.0 // indirect
-	github.com/onsi/gomega v1.10.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	golang.org/x/text v0.3.7 // indirect

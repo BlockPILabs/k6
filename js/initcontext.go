@@ -24,6 +24,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"go.k6.io/k6/blockpi"
 	"net/url"
 	"path/filepath"
 	"runtime"
@@ -132,7 +133,7 @@ func newBoundInitContext(base *InitContext, vuImpl *moduleVUImpl) *InitContext {
 // Require is called when a module/file needs to be loaded by a script
 func (i *InitContext) Require(arg string) goja.Value {
 	switch {
-	case arg == "k6", strings.HasPrefix(arg, "k6/"):
+	case arg == "k6", arg == "pi", strings.HasPrefix(arg, "k6/"), strings.HasPrefix(arg, "pi/"):
 		// Builtin or external modules ("k6", "k6/*", or "k6/x/*") are handled
 		// specially, as they don't exist on the filesystem. This intentionally
 		// shadows attempts to name your own modules this.
@@ -374,19 +375,21 @@ func (i *InitContext) allowOnlyOpenedFiles() {
 }
 
 func getInternalJSModules() map[string]interface{} {
-	return map[string]interface{}{
-		"k6":             k6.New(),
-		"k6/crypto":      crypto.New(),
-		"k6/crypto/x509": x509.New(),
-		"k6/data":        data.New(),
-		"k6/encoding":    encoding.New(),
-		"k6/execution":   execution.New(),
-		"k6/net/grpc":    grpc.New(),
-		"k6/html":        html.New(),
-		"k6/http":        http.New(),
-		"k6/metrics":     metrics.New(),
-		"k6/ws":          ws.New(),
-	}
+	return blockpi.Register(
+		map[string]interface{}{
+			"k6":             k6.New(),
+			"k6/crypto":      crypto.New(),
+			"k6/crypto/x509": x509.New(),
+			"k6/data":        data.New(),
+			"k6/encoding":    encoding.New(),
+			"k6/execution":   execution.New(),
+			"k6/net/grpc":    grpc.New(),
+			"k6/html":        html.New(),
+			"k6/http":        http.New(),
+			"k6/metrics":     metrics.New(),
+			"k6/ws":          ws.New(),
+		},
+	)
 }
 
 func getJSModules() map[string]interface{} {
